@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""
+Pre-commit hook: bumps patch version and sets Moscow time in index.html.
+Version format: v0.XX  (patch +1 on every commit)
+Date format:    DD.MM.YYYY HH:MM МСК
+"""
+
+import re
+import sys
+import subprocess
+from datetime import datetime, timezone, timedelta
+
+HTML = "index.html"
+
+# Read file
+try:
+    with open(HTML, "r", encoding="utf-8") as f:
+        content = f.read()
+except FileNotFoundError:
+    sys.exit(0)  # no index.html staged — skip
+
+# Moscow time
+msk = timezone(timedelta(hours=3))
+now = datetime.now(msk)
+new_date = now.strftime("%d.%m.%Y %H:%M МСК")
+
+# Extract current version from APP object and bump patch
+m = re.search(r'"version"\s*:\s*"v(\d+)\.(\d+)"', content)
+if not m:
+    print("[pre-commit] WARNING: version not found in index.html, skipping bump")
+    sys.exit(0)
+
+major, minor = int(m.group(1)), int(m.group(2))
+new_minor = minor + 1
+new_ver = f"v{major}.{new_minor}"
+new_ver_date = f"{new_ver} · {new_date}"
+
+# Update APP object: "version":"vX.Y"  and  "dateDisplay":"..."
+content = re.sub(
+    r'("version"\s*:\s*)"v\d+\.\d+"',
+    f'\\1"{new_ver}"',
+    content
+)
+content = re.sub(
+    r'("dateDisplay"\s*:\s*)"[^"]+"',
+    f'\\1"{new_date}"',
+    content
+)
+
+# Update headerVersion span (static fallback in HTML)
+content = re.sub(
+    r'(<span[^>]*id="headerVersion"[^>]*>)[^<]*(</span>)',
+    f'\\g<1>{new_ver_date}\\2',
+    content
+)
+
+with open(HTML, "w", encoding="utf-8") as f:
+    f.write(content)
+
+subprocess.run(["git", "add", HTML], check=True)
+print(f"[pre-commit] version bumped: v{major}.{minor} → {new_ver} · {new_date}")
