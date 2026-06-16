@@ -744,8 +744,30 @@ function debounce(fn, ms){ let t=null; return function(){ const a=arguments, c=t
 const liveBuild = debounce(()=>buildResult(false), 180);
 function escapeHtml(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
 function norm(s){ return String(s||"").toLowerCase().replaceAll("ё","е"); }
-function safeFileName(s){ return String(s||"file").replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_").slice(0,90) || "file"; }
+function safeFileName(s){
+  const r=String(s||"file").replace(/[\\/:*?"<>|]+/g,"_").replace(/\s+/g,"_") || "file";
+  if(r.length<=90) return r;
+  const dot=r.lastIndexOf('.');
+  if(dot>0 && r.length-dot<=10){ const ext=r.slice(dot); return r.slice(0,90-ext.length)+ext; }
+  return r.slice(0,90);
+}
 function todayCompact(){ const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); }
+function buildBodyHtml(body){
+  const LABEL_PFX=['Город: ','Юрлицо: ','Программа / база: ','Контакт для связи: ','Проблема: '];
+  const LABEL_EXACT=new Set(['Данные по проблеме:','Прикрепленные файлы:','Комментарий:']);
+  const LABEL_ST='color:#8b9ab0;font-size:0.88em';
+  const FOOTER_ST='color:#6b7280;font-size:0.82em';
+  const lines=body.split('\n');
+  const fi=lines.findIndex(l=>l.startsWith('Подходящие инструкции:'));
+  return lines.map((line,i)=>{
+    const e=escapeHtml(line);
+    if(fi>=0&&i>=fi) return `<span style="${FOOTER_ST}">${e}</span>`;
+    if(LABEL_EXACT.has(line)) return `<span style="${LABEL_ST}">${e}</span>`;
+    const p=LABEL_PFX.find(x=>line.startsWith(x));
+    if(p) return `<span style="${LABEL_ST}">${escapeHtml(p)}</span>${escapeHtml(line.slice(p.length))}`;
+    return e;
+  }).join('\n');
+}
 
 function applyHeaderVersion(){
   try{
@@ -1401,7 +1423,7 @@ ${fieldsText}
 Прикрепленные файлы:
 ${attached}
 
-Важно: архив и файлы нужно прикрепить к письму вручную. Кнопка Outlook / Thunderbird заполняет только кому, тему и текст письма.
+Важно: архив и файлы нужно прикрепить к письму вручную. Кнопка Outlook / Thunderbird заполняет только адресата, тему и текст письма.
 
 Подходящие инструкции:
 ${instText}
@@ -1409,7 +1431,7 @@ ${instText}
 Комментарий:
 Если данных недостаточно, напишите, что ещё нужно приложить.`;
   $("subjectPreview").textContent = lastSubject;
-  $("bodyPreview").textContent = lastBody;
+  $("bodyPreview").innerHTML = buildBodyHtml(lastBody);
   $("fullPreview").textContent = `ТЕМА:\n${lastSubject}\n\nТЕКСТ ПИСЬМА:\n${lastBody}`;
   renderInstructions(lastInstructions);
   return !missing.length;
@@ -2218,7 +2240,7 @@ function clearAll(){
   lastSubject=""; lastBody=""; lastInstructions=[];
   $("errors").style.display="none"; $("errors").innerHTML="";
   $("subjectPreview").textContent="Пока не сформировано.";
-  $("bodyPreview").textContent="Пока не сформировано.";
+  $("bodyPreview").innerHTML="Пока не сформировано.";
   $("fullPreview").textContent="Пока не сформировано.";
   renderFiles();
   renderDynamicFields();
