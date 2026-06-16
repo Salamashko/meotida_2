@@ -275,7 +275,22 @@
           </div>
 
           <div class="card">
-            <h2>3. Получить результат</h2>
+            <h2>3. Файлы и скриншоты</h2>
+            <div class="stepHelp"><b>Как прикрепить скрин:</b> сделайте скриншот, нажмите сюда в серую область и нажмите <b>Ctrl+V</b>. Или нажмите кнопку «Выбрать файлы». Если не знаете, как сделать скриншот, откройте инструкцию: <a href="https://wiki.gkmillenium.ru/bin/view/polzovatelskaya-dokumentaciya-filialy/instrukcii-salamashko/raznoe/Skrinshoter/" target="_blank" rel="noopener noreferrer">как делать скриншоты</a>.<br><br><b>Если нужно прислать видео:</b> загрузите его в облачное хранилище (Яндекс Диск, Mail Облако, Google Диск или любое другое) и вставьте ссылку в поле описания проблемы.</div>
+            <div id="fileDrop" class="fileDrop" tabindex="0">
+              <b>Сюда можно вставить скриншот Ctrl+V</b><br>
+              или перетащить файлы мышкой. Один файл не будет добавляться дважды.
+            </div>
+            <input id="fileInput" type="file" multiple accept=".xml,.zip,.xls,.xlsx,.csv,.pdf,.png,.jpg,.jpeg,.txt,.pfx,.cer,.sig" style="margin-top:12px">
+            <div class="buttonRow">
+              <button id="clearFilesBtn" class="ghost" type="button">Очистить файлы</button>
+              <div class="buttonHelp">Нажмите, если случайно прикрепили не тот файл. Это удалит файлы только из приложения, на компьютере они останутся.</div>
+            </div>
+            <div id="fileList" class="fileList"></div>
+          </div>
+
+          <div class="card">
+            <h2>4. Получить результат</h2>
             <div id="errors" class="errorBox"></div>
             <div class="buttonRow">
               <div><div class="stepBadge stepBadge--blue">① Шаг первый</div><button id="buildBtn" type="button">Проверить и сформировать</button></div>
@@ -289,21 +304,6 @@
               <button id="clearAllBtn" class="ghost" type="button">Очистить всё</button>
               <div class="buttonHelp">Нажмите, если хотите начать заново. Очистятся поля, выбранная проблема, скриншоты и загруженные файлы. Файлы на компьютере не удалятся.</div>
             </div>
-          </div>
-
-          <div class="card">
-            <h2>4. Файлы и скриншоты</h2>
-            <div class=”stepHelp”><b>Как прикрепить скрин:</b> сделайте скриншот, нажмите сюда в серую область и нажмите <b>Ctrl+V</b>. Или нажмите кнопку “Выбрать файлы”. Если не знаете, как сделать скриншот, откройте инструкцию: <a href=”https://wiki.gkmillenium.ru/bin/view/polzovatelskaya-dokumentaciya-filialy/instrukcii-salamashko/raznoe/Skrinshoter/” target=”_blank” rel=”noopener noreferrer”>как делать скриншоты</a>.<br><br><b>Если нужно прислать видео:</b> загрузите его в облачное хранилище (Яндекс Диск, Mail Облако, Google Диск или любое другое) и вставьте ссылку в поле описания проблемы.</div>
-            <div id="fileDrop" class="fileDrop" tabindex="0">
-              <b>Сюда можно вставить скриншот Ctrl+V</b><br>
-              или перетащить файлы мышкой. Один файл не будет добавляться дважды.
-            </div>
-            <input id="fileInput" type="file" multiple accept=".xml,.zip,.xls,.xlsx,.csv,.pdf,.png,.jpg,.jpeg,.txt,.pfx,.cer,.sig" style="margin-top:12px">
-            <div class="buttonRow">
-              <button id="clearFilesBtn" class="ghost" type="button">Очистить файлы</button>
-              <div class="buttonHelp">Нажмите, если случайно прикрепили не тот файл. Это удалит файлы только из приложения, на компьютере они останутся.</div>
-            </div>
-            <div id="fileList" class="fileList"></div>
           </div>
 
         </div>
@@ -2257,21 +2257,21 @@ function clearAll(){
 
 
 function buildEmailHtml(body){
-  const LABEL_PFX=[‘Город: ‘,’Юрлицо: ‘,’Программа / база: ‘,’Контакт для связи: ‘,’Проблема: ‘];
-  const LABEL_EXACT=new Set([‘Данные по проблеме:’,’Прикрепленные файлы:’,’Комментарий:’]);
-  const LABEL_ST=’color:#888888;font-size:12px’;
-  const FOOTER_ST=’color:#888888;font-size:11px’;
-  const lines=body.split(‘\n’);
-  const fi=lines.findIndex(l=>l.startsWith(‘Подходящие инструкции:’));
+  const LABEL_PFX=['Город: ','Юрлицо: ','Программа / база: ','Контакт для связи: ','Проблема: '];
+  const LABEL_EXACT=new Set(['Данные по проблеме:','Прикрепленные файлы:','Комментарий:']);
+  const LABEL_ST='color:#888888;font-size:12px';
+  const FOOTER_ST='color:#888888;font-size:11px';
+  const lines=body.split('\n');
+  const fi=lines.findIndex(l=>l.startsWith('Подходящие инструкции:'));
   const html=lines.map((line,i)=>{
     const e=escapeHtml(line);
-    if(!line) return ‘’;
+    if(!line) return '';
     if(fi>=0&&i>=fi) return `<span style="${FOOTER_ST}">${e}</span>`;
     if(LABEL_EXACT.has(line)) return `<span style="${LABEL_ST}">${e}</span>`;
     const p=LABEL_PFX.find(x=>line.startsWith(x));
     if(p) return `<span style="${LABEL_ST}">${escapeHtml(p)}</span>${escapeHtml(line.slice(p.length))}`;
     return e;
-  }).join(‘<br>\n’);
+  }).join('<br>\n');
   return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;font-size:14px;color:#000000;line-height:1.5;margin:12px">${html}</body></html>`;
 }
 
@@ -2285,17 +2285,17 @@ function openMailClient(){
   // RFC 2047 Base64 encoded subject for non-ASCII support
   const subjectEncoded = `=?utf-8?B?${btoa(unescape(encodeURIComponent(subject)))}?=`;
   const eml = [
-    ‘From: ‘,
+    'From: ',
     `To: ${to}`,
     `Subject: ${subjectEncoded}`,
-    ‘MIME-Version: 1.0’,
-    ‘Content-Type: text/html; charset=utf-8’,
-    ‘X-Unsent: 1’,
-    ‘’,
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset=utf-8',
+    'X-Unsent: 1',
+    '',
     htmlBody
-  ].join(‘\r\n’);
-  const blob = new Blob([eml], {type: ‘message/rfc822’});
-  downloadBlob(blob, safeFileName(subject) + ‘.eml’);
+  ].join('\r\n');
+  const blob = new Blob([eml], {type: 'message/rfc822'});
+  downloadBlob(blob, safeFileName(subject) + '.eml');
 }
 
 async function downloadZip(){
