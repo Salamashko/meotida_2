@@ -2819,6 +2819,14 @@ function updateProgress(){
 // --- Галочки валидности у полей ---
 function refreshFieldTicks(){
   document.querySelectorAll("#dynamicFields .okTick").forEach(e=>e.remove());
+  ["city","org","program"].forEach(id=>{
+    const el = $(id); const lab = document.querySelector(`label[for="${id}"]`);
+    if(!lab) return;
+    const old = lab.querySelector(".okTick"); if(old) old.remove();
+    if(el && el.value && el.value.trim()){
+      const s = document.createElement("span"); s.className="okTick"; s.textContent="✓"; lab.appendChild(s);
+    }
+  });
   const p = currentProblem(); if(!p) return;
   (p.fields||[]).forEach(f=>{
     if(!f.required) return;
@@ -2958,19 +2966,39 @@ function wizardCards(){
   return Array.from(document.querySelectorAll("#formTab .grid > div:first-child > .card")).filter(c=>c.id!=="wizardNav");
 }
 const WIZ_TITLES = ["Кто вы", "Проблема и срочность", "Файлы", "Проверка и отправка"];
+function isFieldFilled(f){
+  if(f.type==="file") return uploadedFiles.some(x=>x.fieldId===f.id);
+  if(f.type==="docpair") return getDocPairRows(f.id).some(x=>x.number && x.date);
+  const el=$("field_"+f.id);
+  return !!(el && el.value && el.value.trim());
+}
 function wizardStepValid(i){
   if(i===0) return !!($("city").value.trim() && $("org").value.trim() && $("program").value.trim());
   if(i===1){
     if(!getUrgency()) return false;
     const p = currentProblem(); if(!p) return false;
-    return (p.fields||[]).filter(f=>f.required).every(f=>{
-      const el=$("field_"+f.id); if(!el && f.type!=="file") return false;
-      if(f.type==="file") return uploadedFiles.some(x=>x.fieldId===f.id);
-      if(f.type==="docpair") return getDocPairRows(f.id).some(x=>x.number && x.date);
-      return !!(el && el.value && el.value.trim());
-    });
+    return (p.fields||[]).filter(f=>f.required).every(isFieldFilled);
   }
   return true;
+}
+function wizStepMissingMessage(i){
+  if(i===0){
+    if(!$("city").value.trim()) return "Пожалуйста, укажите город";
+    if(!$("org").value.trim()) return "Пожалуйста, укажите вашу организацию (юрлицо)";
+    if(!$("program").value.trim()) return "Пожалуйста, выберите программу, с которой возникла проблема";
+  }
+  if(i===1){
+    if(!getUrgency()) return "Пожалуйста, укажите срочность";
+    const p = currentProblem();
+    if(!p) return "Пожалуйста, выберите вашу проблему";
+    const missing = (p.fields||[]).find(f=>f.required && !isFieldFilled(f));
+    if(missing){
+      const lab = document.querySelector(`label[for="field_${CSS.escape(missing.id)}"]`);
+      const text = lab ? lab.textContent.replace(/[\sⓘ*]+$/,"").trim() : "обязательное поле";
+      return `Пожалуйста, заполните поле «${text}»`;
+    }
+  }
+  return "Заполните обязательные поля этого шага";
 }
 function renderWizard(){
   const cards = wizardCards();
@@ -3088,7 +3116,7 @@ function enhanceUX(){
   $("wizPrev") && $("wizPrev").addEventListener("click", ()=>{ if(wizStep>0){ wizStep--; renderWizard(); window.scrollTo({top:0,behavior:"smooth"}); } });
   $("wizNext") && $("wizNext").addEventListener("click", ()=>{
     const cards = wizardCards();
-    if(!wizardStepValid(wizStep)){ buildResult(true); toast("Заполните обязательные поля этого шага", "err"); return; }
+    if(!wizardStepValid(wizStep)){ buildResult(true); toast(wizStepMissingMessage(wizStep), "err"); return; }
     if(wizStep < cards.length-1){ wizStep++; renderWizard(); window.scrollTo({top:0,behavior:"smooth"}); }
     else { copyWholeRequest("copySuccess"); }
   });
