@@ -315,6 +315,11 @@
     .field-ok{position:relative}
     .okTick{color:var(--green);font-weight:900;margin-left:6px}
 
+    /* Крупное поле «Текст ошибки» наверху для технических проблем (Н9) */
+    .primaryErrorField{order:-1;border:2px solid var(--accent);border-radius:10px;padding:10px;background:var(--card)}
+    .primaryErrorField label{font-weight:800}
+    .primaryErrorField textarea{min-height:120px}
+
     /* Кнопки-пресеты */
     .presetRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
     .presetRow .preset{background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px;font-weight:700;color:#334155}
@@ -1142,8 +1147,9 @@ function renderDynamicFields(){
   if(!p){ $("problemInstruction").innerHTML = ""; $("dynamicFields").innerHTML = `<div class="hint">Проблем пока нет.</div>`; return; }
   $("problemInstruction").innerHTML = `<b>Что делать:</b> ${escapeHtml(p.instruction || "Заполните поля ниже.")}`;
   const fields=(p.fields||[]);
+  const orderedFields = [...fields].sort((a,b)=>(isErrorTextField(b)?1:0)-(isErrorTextField(a)?1:0));
   let screenshotInstructionWasAdded = false;
-  $("dynamicFields").innerHTML = fields.map(f=>{
+  $("dynamicFields").innerHTML = orderedFields.map(f=>{
     const showScreenshotInstruction = isScreenshotField(f) && !screenshotInstructionWasAdded;
     if(isScreenshotField(f)) screenshotInstructionWasAdded = true;
     return renderField(f, showScreenshotInstruction);
@@ -1197,6 +1203,10 @@ function isScreenshotField(f){
 function isUpdXmlField(f){
   const hay = norm([f.label, f.help, f.helpHtml, f.accept, f.id].join(" "));
   return f.type==="file" && hay.includes("упд") && hay.includes("xml");
+}
+function isErrorTextField(f){
+  const hay = norm([f.label, f.help, f.helpHtml, f.id].join(" "));
+  return (f.type==="text" || f.type==="textarea") && /текст.*ошиб|сообщен.*ошиб|ошибк/.test(hay);
 }
 function renderHelp(f, showScreenshotInstruction){
   const raw = f.helpHtml ? String(f.helpHtml) : escapeHtml(f.help||"");
@@ -1317,11 +1327,11 @@ function renderField(f, showScreenshotInstruction){
   const help=renderHelp(f, showScreenshotInstruction);
   const label=`<label for="field_${escapeHtml(f.id)}">${escapeHtml(f.label)}${req}</label>`;
   if(f.type==="docpair") return `<div>${label}<div id="field_${escapeHtml(f.id)}" data-field="${escapeHtml(f.id)}" data-type="docpair">${renderDocPairRows(f.id)}</div>${help}</div>`;
-  if(f.type==="textarea") return `<div>${label}<textarea id="field_${escapeHtml(f.id)}" data-field="${escapeHtml(f.id)}"></textarea>${help}</div>`;
+  if(f.type==="textarea") return `<div${isErrorTextField(f)?' class="primaryErrorField"':''}>${label}<textarea id="field_${escapeHtml(f.id)}" data-field="${escapeHtml(f.id)}" ${isErrorTextField(f)?'rows="6" placeholder="Вставьте сюда текст ошибки целиком"':''}></textarea>${help}</div>`;
   if(f.type==="select") return `<div>${label}<select id="field_${escapeHtml(f.id)}" data-field="${escapeHtml(f.id)}"><option value="">Выберите</option>${sortOptions(f.options||[]).map(o=>`<option>${escapeHtml(o)}</option>`).join("")}</select>${help}</div>`;
   if(f.type==="date") return `<div>${label}<input id="field_${escapeHtml(f.id)}" type="date" data-field="${escapeHtml(f.id)}">${help}</div>`;
   if(f.type==="file") return `<div>${label}<input id="field_${escapeHtml(f.id)}" type="file" multiple data-field="${escapeHtml(f.id)}" ${f.accept?`accept="${escapeHtml(f.accept)}"`:""}>${help}</div>`;
-  return `<div>${label}<input id="field_${escapeHtml(f.id)}" type="text" data-field="${escapeHtml(f.id)}">${help}</div>`;
+  return `<div${isErrorTextField(f)?' class="primaryErrorField"':''}>${label}<input id="field_${escapeHtml(f.id)}" type="text" data-field="${escapeHtml(f.id)}">${help}</div>`;
 }
 function updateOperatorHelp(){
   const op=$("field_edo_operator");
