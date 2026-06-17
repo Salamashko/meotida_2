@@ -425,6 +425,7 @@
     <div class="progressWrap" id="progressWrap">
       <div class="progressBar"><i id="progressFill"></i></div>
       <div class="progressText" id="progressText">Заполнено 0%</div>
+      <span class="draftSavedTick" id="draftSavedTick">Черновик сохранён ✓</span>
     </div>
     <div class="tabs">
       <button class="tabBtn active" data-tab="formTab">1. Заполнить заявку</button>
@@ -2856,13 +2857,20 @@ function collectDraftState(){
     contact:$("contact").value, problem:$("problem").value, urgency:getUrgency(), fields
   };
 }
+let draftTickTimer = null;
+function flashDraftSaved(){
+  const el = $("draftSavedTick"); if(!el) return;
+  el.classList.add("show");
+  clearTimeout(draftTickTimer);
+  draftTickTimer = setTimeout(()=>el.classList.remove("show"), 2000);
+}
 function scheduleDraftSave(){
   clearTimeout(draftTimer);
   draftTimer = setTimeout(()=>{
     try{
       const st = collectDraftState();
       const hasAny = st.city||st.org||st.program||st.contact||Object.values(st.fields).some(v=>v&&v.trim());
-      if(hasAny) localStorage.setItem(DRAFT_KEY, JSON.stringify(st));
+      if(hasAny){ localStorage.setItem(DRAFT_KEY, JSON.stringify(st)); flashDraftSaved(); }
     }catch(e){}
   }, 500);
 }
