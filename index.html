@@ -27,9 +27,13 @@
     button,.btnLike{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--accent);color:white;font:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;text-decoration:none;transition:.15s}
     button:hover,.btnLike:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,134,187,.2)}
     button.secondary{background:#eef7fb;color:#075985;border:1px solid #cbe8f4}
-    button.mailPrimary{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:1px solid #fb923c;box-shadow:0 14px 28px rgba(249,115,22,.26);font-size:15px;min-height:48px;width:100%}
+    button.mailPrimary{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:1px solid #fb923c;box-shadow:0 14px 28px rgba(249,115,22,.26);font-size:19px;font-weight:800;min-height:66px;padding:16px 22px;width:100%;line-height:1.3}
     button.mailPrimary:hover{box-shadow:0 18px 36px rgba(220,38,38,.30)}
-    .mailTopAction{display:grid;grid-template-columns:minmax(230px,300px) minmax(0,1fr);gap:12px;align-items:center;margin:0 0 14px}
+    .mailTopAction{margin:0 0 16px}
+    .mailExplain{margin:12px 2px 0;font-size:15px;line-height:1.6;color:var(--muted)}
+    .mailExplain b{color:var(--text)}
+    body.mode-simple button.mailPrimary{font-size:21px;min-height:74px}
+    body.mode-simple .mailExplain{font-size:16.5px;color:var(--text)}
     .docPairBox{display:grid;gap:8px}
     .docPairRow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(150px,.8fr) auto;gap:8px;align-items:center}
     .docPairRow input{min-width:0}
@@ -272,10 +276,12 @@
     body.theme-dark .localBadge{border-color:#1f7a44}
 
     /* Переключатель режимов */
-    .modeSwitch{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-    .modeSwitch button{background:#fff;color:var(--muted);border:0;border-radius:0;padding:8px 12px;font-size:13px;min-height:38px}
-    body.theme-dark .modeSwitch button{background:#16233b;color:var(--muted)}
-    .modeSwitch button.on{background:var(--accent);color:#fff}
+    .modeLabel{font-weight:800;color:#6d28d9;margin-right:2px;font-size:13px;align-self:center}
+    body.theme-dark .modeLabel{color:#c4b5fd}
+    .modeSwitch{display:inline-flex;border:2px solid #a78bfa;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(124,58,237,.18)}
+    .modeSwitch button{background:#f5f3ff;color:#6d28d9;border:0;border-radius:0;padding:9px 16px;font-size:14px;font-weight:700;min-height:40px}
+    body.theme-dark .modeSwitch button{background:#2a2147;color:#c4b5fd}
+    .modeSwitch button.on{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
 
     /* Индикатор прогресса */
     .progressWrap{margin:14px 0 0}
@@ -312,9 +318,13 @@
     body.mode-simple .card{padding:26px;margin-bottom:22px}
     body.mode-simple .tabs [data-tab="configTab"],
     body.mode-simple .tabs [data-tab="itWikiTab"]{display:none!important}
-    body.mode-simple input,body.mode-simple select,body.mode-simple textarea{min-height:48px;padding:13px 14px}
+    body.mode-simple input,body.mode-simple select,body.mode-simple textarea{min-height:50px;padding:14px 15px;font-size:17px}
+    body.mode-simple label{font-size:16px;font-weight:700}
     body.mode-simple button{min-height:48px}
-    body.mode-simple .row{gap:18px}
+    /* Простой режим: одна колонка, широкие поля, удобная ширина для чтения */
+    body.mode-simple .grid{grid-template-columns:1fr;max-width:780px;margin:0 auto;gap:0}
+    body.mode-simple .row{grid-template-columns:1fr;gap:20px}
+    body.mode-simple aside{margin-top:4px}
     body.mode-simple .req{color:var(--red)}
     /* «Большой вопрос шага» вместо технического заголовка карточки */
     .simpleQuestion{display:none}
@@ -423,6 +433,7 @@
       </div>
     </div>
     <div class="toolbar" role="group" aria-label="Настройки отображения">
+      <span class="modeLabel">Режим:</span>
       <span class="modeSwitch" id="modeSwitch" role="group" aria-label="Режим">
         <button type="button" data-mode="simple">Простой</button>
         <button type="button" data-mode="pro">Профессиональный</button>
@@ -568,8 +579,8 @@
         <aside>
           <div class="card">
             <div class="mailTopAction">
-              <button id="openMailBtn" class="mailPrimary" type="button">Скачать письмо для Outlook / Thunderbird</button>
-              <div class="buttonHelp">Сначала заполните обязательные поля. Нажмите кнопку — скачается файл .eml. Откройте его двойным кликом: письмо откроется в почтовой программе с готовой темой и текстом. Архив и файлы прикрепите вручную.</div>
+              <button id="openMailBtn" class="mailPrimary" type="button">📧 Скачать готовое письмо<br>(Outlook / Thunderbird)</button>
+              <p class="mailExplain">Нажмите — на компьютер скачается небольшой файл письма. Найдите его в папке <b>«Загрузки»</b> и откройте <b>двойным щелчком мыши</b>. Ваша почтовая программа откроется сама — тема и текст уже будут вписаны. Останется только прикрепить файлы (если они есть) и нажать <b>«Отправить»</b>.</p>
             </div>
             <h2>Тема письма</h2>
             <div id="subjectPreview" class="subjectBox">Пока не сформировано.</div>
