@@ -318,6 +318,10 @@
     /* Объяснялки терминов (значок ⓘ с подсказкой по наведению) */
     .explainer{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
       background:var(--soft);color:var(--muted);font-size:12px;font-weight:800;cursor:help;margin-left:5px;vertical-align:middle}
+    /* Кнопка быстрого заполнения «не знаю / пропустить» у необязательных полей */
+    .inlineSkipBtn{font-weight:600;font-size:12px;color:var(--accent-dark);background:var(--soft);
+      border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin-left:8px;cursor:pointer;font-family:inherit}
+    .inlineSkipBtn:hover{background:var(--card)}
     /* Индикатор «черновик сохранён» */
     .draftSavedTick{font-size:12px;color:var(--green);font-weight:700;margin-left:10px;opacity:0;transition:opacity .4s}
     .draftSavedTick.show{opacity:1}
@@ -485,7 +489,7 @@
                 <div id="programNotice" class="bigNotice"></div>
               </div>
               <div>
-                <label for="contact">ФИО и должность</label>
+                <label for="contact">ФИО и должность <button type="button" id="contactSkipBtn" class="inlineSkipBtn">Не знаю / есть в подписи письма</button></label>
                 <input id="contact" placeholder="Укажите ваши ФИО и должность, если они не указаны в подписи">
               </div>
             </div>
@@ -1186,6 +1190,10 @@ function bindEvents(){
   $("newFieldType").addEventListener("change", syncNewFieldOptionsVisibility);
   $("fileInput").addEventListener("change", e=>addFiles(Array.from(e.target.files||[])));
   $("clearFilesBtn").addEventListener("click",()=>{ uploadedFiles=[]; $("fileInput").value=""; renderFiles(); buildResult(false); });
+  $("contactSkipBtn") && $("contactSkipBtn").addEventListener("click",()=>{
+    $("contact").value = "указано в подписи письма";
+    buildResult(false); scheduleDraftSave();
+  });
   $("clearAllBtn").addEventListener("click", ()=>{
     showModal("Точно очистить заявку?", "Все заполненные поля, выбранная проблема, скриншоты и файлы будут удалены. Файлы на компьютере не удалятся.", ()=>{ clearAll(); toast("Заявка очищена", "info"); });
   });
