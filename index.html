@@ -138,15 +138,17 @@
     /* Кастомный выпадающий список (город / юрлицо) */
     .combo{position:relative}
     .combo .comboInput{padding-right:38px}
-    .comboCaret{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:13px}
-    .comboList{display:none;position:absolute;z-index:40;left:0;right:0;top:calc(100% + 6px);max-height:280px;overflow-y:auto;background:#fff;border:1px solid var(--accent);border-radius:14px;box-shadow:0 18px 40px rgba(15,23,42,.18);padding:6px}
+    .comboCaret{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:16px;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+    .comboCaret:hover{background:var(--soft)}
+    .comboList{display:none;position:absolute;z-index:40;left:0;right:0;top:calc(100% + 6px);max-height:320px;overflow-y:auto;background:#fff;border:1px solid var(--accent);border-radius:14px;box-shadow:0 18px 40px rgba(15,23,42,.18);padding:6px}
     .combo.open .comboList{display:block}
-    .comboItem{padding:10px 12px;border-radius:10px;cursor:pointer;line-height:1.3;font-weight:600}
+    .comboItem{min-height:40px;display:flex;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer;line-height:1.3;font-weight:600}
     .comboItem:hover{background:#eef7fb}
     .comboItem.special{background:#fff4ec;color:#9a3412;border:1px solid #fdba74;font-weight:800;margin-bottom:3px}
     .comboItem.special:hover{background:#ffe8d6}
     .comboItem.special::before{content:"★ ";color:#ea580c}
     .comboSep{height:1px;background:var(--line);margin:6px 4px}
+    .comboHint{padding:8px 12px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:4px}
     .comboEmpty{padding:10px 12px;color:var(--muted);font-size:13px}
 
     /* Яркое сообщение про 1С Бухгалтерию (ЮнионСофт) */
@@ -1000,16 +1002,22 @@ function initCombobox(inputId, items, highlightArr){
     const q = norm(input.value).trim();
     const match = x => !q || norm(x).includes(q);
     const top = all.filter(x=>highlight.has(x)).filter(match);
-    const normal = all.filter(x=>!highlight.has(x)).filter(match);
+    let normal = all.filter(x=>!highlight.has(x)).filter(match);
+    let truncated = false;
+    if(!q){
+      const limit = Math.max(0, 15 - top.length);
+      if(normal.length > limit){ normal = normal.slice(0, limit); truncated = true; }
+    }
     let html = "";
-    top.forEach(x=>{ html += `<div class="comboItem special" data-val="${escapeHtml(x)}">${escapeHtml(x)}</div>`; });
+    top.forEach(x=>{ html += `<div class="comboItem special" data-val="${escapeHtml(x)}" role="option">${escapeHtml(x)}</div>`; });
     if(top.length && normal.length) html += `<div class="comboSep"></div>`;
-    normal.forEach(x=>{ html += `<div class="comboItem" data-val="${escapeHtml(x)}">${escapeHtml(x)}</div>`; });
+    normal.forEach(x=>{ html += `<div class="comboItem" data-val="${escapeHtml(x)}" role="option">${escapeHtml(x)}</div>`; });
     if(!top.length && !normal.length) html = `<div class="comboEmpty">Нет в списке. Можно вписать своё значение вручную.</div>`;
+    if(truncated) html += `<div class="comboHint">Показаны первые варианты. Печатайте, чтобы найти нужный.</div>`;
     list.innerHTML = html;
   }
-  function openList(){ renderList(); combo.classList.add("open"); isOpen = true; }
-  function closeList(){ combo.classList.remove("open"); isOpen = false; }
+  function openList(){ renderList(); combo.classList.add("open"); isOpen = true; input.setAttribute("aria-expanded","true"); }
+  function closeList(){ combo.classList.remove("open"); isOpen = false; input.setAttribute("aria-expanded","false"); }
 
   let activeIdx = -1;
   function items(){ return Array.from(list.querySelectorAll(".comboItem")); }
@@ -1039,6 +1047,17 @@ function initCombobox(inputId, items, highlightArr){
     input.dispatchEvent(new Event("change", {bubbles:true}));
   });
   document.addEventListener("click", e=>{ if(isOpen && !combo.contains(e.target)) closeList(); });
+  const caret = combo.querySelector(".comboCaret");
+  if(caret){
+    caret.addEventListener("click", e=>{
+      e.preventDefault(); e.stopPropagation();
+      if(isOpen) closeList(); else { input.focus(); openList(); }
+    });
+  }
+  input.setAttribute("role","combobox");
+  input.setAttribute("aria-expanded","false");
+  input.setAttribute("aria-autocomplete","list");
+  list.setAttribute("role","listbox");
 }
 
 function updateProgramNotice(){
@@ -1615,10 +1634,11 @@ function buildResult(showErrors){
   const short=makeShort(data);
   const urgency = getUrgency();
   const category = detectCategory(data);
-  // Структурированная тема: [КАТЕГОРИЯ][P2] Город · Юрлицо · Программа — Краткая суть
+  // Структурированная тема: Город · Юрлицо · Программа — Краткая суть [КАТЕГОРИЯ][P2]
+  // Город и юрлицо — в начале темы; служебные метки категории/срочности — в конце.
   const tag = (category ? `[${category}]` : "") + (urgency ? `[${urgency}]` : "");
   const head = [data.city, data.org, data.program].map(x=>String(x||"").trim()).filter(Boolean).join(" · ");
-  lastSubject = `${tag}${tag?" ":""}${head}${head?" — ":""}${short}`.replace(/\s+/g," ").trim().slice(0,220);
+  lastSubject = `${head}${head?" — ":""}${short}${tag?" "+tag:""}`.replace(/\s+/g," ").trim().slice(0,220);
   const attached = uploadedFiles.length ? uploadedFiles.map(x=>"• "+x.file.name).join("\n") : "Файлы не прикреплены";
   lastInstructions = shouldSearchInstructions(data) ? findInstructions(data, 7) : [];
   setHighlightFromText([data.problem && data.problem.title, Object.values(data.fields||{}).join(" ")].join(" "));
@@ -1629,9 +1649,6 @@ function buildResult(showErrors){
 `Здравствуйте.
 
 Прошу помочь с проблемой.
-
-Срочность: ${urgencyLabel(urgency)}
-Категория: ${category || "не определена"}
 
 Город: ${data.city || ""}
 Юрлицо: ${data.org || ""}
@@ -1655,7 +1672,11 @@ ${attached}
 ${instText}
 
 Комментарий:
-Если данных недостаточно, напишите, что ещё нужно приложить.`;
+Если данных недостаточно, напишите, что ещё нужно приложить.
+
+—— Служебные метки для IT ——
+Категория: ${category || "не определена"}
+Срочность: ${urgencyLabel(urgency)}`;
   $("subjectPreview").textContent = lastSubject;
   $("bodyPreview").innerHTML = buildBodyHtml(lastBody);
   $("fullPreview").textContent = `ТЕМА:\n${lastSubject}\n\nТЕКСТ ПИСЬМА:\n${lastBody}`;
@@ -2532,18 +2553,21 @@ async function downloadZip(){
   files.push({path:"01_тема_письма.txt", data:lastSubject});
   files.push({path:"02_тело_письма.txt", data:lastBody});
   const urgency = getUrgency();
+  const category = detectCategory(data) || "";
+  const subjectTags = (category ? `[${category}]` : "") + (urgency ? `[${urgency}]` : "");
   files.push({path:"03_данные_заявки.json", data:JSON.stringify({
+    city:data.city, org:data.org, program:data.program, contact:data.contact,
+    problem:data.problem.title, fields:data.fields,
     ticket_id: makeTicketId(),
     app_version: (APP && APP.version) || "",
     created_at: new Date().toISOString(),
     user_agent: navigator.userAgent,
+    files: uploadedFiles.map(x=>x.file.name),
+    instructions: lastInstructions.map(x=>({title:x.title,url:x.url,accessGroup:x.accessGroup})),
     urgency: urgency || "",
     urgency_label: urgencyLabel(urgency),
-    category: detectCategory(data) || "",
-    city:data.city, org:data.org, program:data.program, contact:data.contact,
-    problem:data.problem.title, fields:data.fields,
-    files: uploadedFiles.map(x=>x.file.name),
-    instructions: lastInstructions.map(x=>({title:x.title,url:x.url,accessGroup:x.accessGroup}))
+    category: category,
+    subject_tags: subjectTags
   }, null, 2)});
   for(const item of uploadedFiles){
     files.push({path:"files/"+safeFileName(item.file.name), data:item.file});
