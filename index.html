@@ -275,6 +275,41 @@
     body.collapse-help .buttonHelp{display:none}
     body.collapse-help .buttonHelp.open{display:block;margin-top:8px}
 
+    /* Простой режим: пастельная палитра и минимализм */
+    body.mode-simple{
+      --bg:#f6f4fb; --soft:#eef0f6; --card:#ffffff;
+      --text:#3a3a42; --muted:#8b8b95; --line:#e7e3f1;
+      --accent:#7fae9e; --accent-dark:#5f9483;
+      --shadow:0 6px 24px rgba(120,110,150,.10); --radius:18px;
+      background:linear-gradient(180deg,#f6f4fb,#f8f7fb);
+      font-size:max(17px, var(--fs-base));
+    }
+    body.mode-simple .buttonHelp,body.mode-simple .helpToggle,
+    body.mode-simple .stepHelp,body.mode-simple .stepBadge,
+    body.mode-simple .subtitle{display:none!important}
+    body.mode-simple .card{padding:26px;margin-bottom:22px}
+    body.mode-simple input,body.mode-simple select,body.mode-simple textarea{min-height:48px;padding:13px 14px}
+    body.mode-simple button{min-height:48px}
+    body.mode-simple .row{gap:18px}
+    body.mode-simple .req{color:var(--red)}
+    /* «Большой вопрос шага» вместо технического заголовка карточки */
+    .simpleQuestion{display:none}
+    body.mode-simple .card > h2{display:none}
+    body.mode-simple .card > .simpleQuestion{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:800;margin:0 0 16px;color:var(--text)}
+    .simpleQuestion .qIcon{font-size:28px;line-height:1}
+    /* Кнопка «Далее» — крупная и единственная заметная на шаге */
+    body.mode-simple #wizNext{min-height:54px;font-size:17px;padding:14px 24px}
+    /* Объяснялки терминов (значок ⓘ с подсказкой по наведению) */
+    .explainer{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
+      background:var(--soft);color:var(--muted);font-size:12px;font-weight:800;cursor:help;margin-left:5px;vertical-align:middle}
+    /* Индикатор «черновик сохранён» */
+    .draftSavedTick{font-size:12px;color:var(--green);font-weight:700;margin-left:10px;opacity:0;transition:opacity .4s}
+    .draftSavedTick.show{opacity:1}
+    /* Плавное появление шага мастера (с уважением к prefers-reduced-motion) */
+    @keyframes wizFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .wizFadeIn{animation:wizFadeIn .2s ease}
+    @media (prefers-reduced-motion:reduce){.wizFadeIn{animation:none}}
+
     /* Тосты */
     #toastBox{position:fixed;right:16px;bottom:16px;z-index:100000;display:flex;flex-direction:column;gap:10px;max-width:360px}
     .toast{background:#0f172a;color:#fff;border-radius:14px;padding:12px 14px;box-shadow:0 14px 34px rgba(0,0,0,.3);
@@ -404,6 +439,7 @@
           </div>
           <div class="card">
             <h2>1. Кто пишет заявку</h2>
+            <div class="simpleQuestion"><span class="qIcon">🏙</span> Где вы работаете?</div>
             <div class="stepHelp"><b>Для пользователя:</b> сначала заполните город, юрлицо и программу. Если не знаете точное название города, начните писать первые буквы, приложение подскажет варианты. Юрлицо можно выбрать из списка или вписать вручную, если его нет.</div>
             <div class="row">
               <div>
@@ -416,7 +452,7 @@
                 <p class="hint">Нажмите на поле — откроется список. Можно начать печатать, чтобы быстрее найти. Заграничные базы стоят сверху и отмечены цветом.</p>
               </div>
               <div>
-                <label for="org">Ваша организация (юрлицо) <span class="req">*</span></label>
+                <label for="org">Ваша организация (юрлицо) <span class="req">*</span><span class="explainer" tabindex="0" title="Юрлицо — официальное название организации, от которой вы работаете">ⓘ</span></label>
                 <div class="combo" id="orgCombo">
                   <input id="org" class="comboInput" autocomplete="off" placeholder="Нажмите и выберите юрлицо">
                   <span class="comboCaret">▾</span>
@@ -440,11 +476,12 @@
 
           <div class="card">
             <h2>2. Что случилось</h2>
+            <div class="simpleQuestion"><span class="qIcon">⚠️</span> Что случилось?</div>
             <div class="stepHelp"><b>Для пользователя:</b> выберите проблему из списка. После выбора появятся именно те поля, которые нужны для этой проблемы.</div>
             <label for="problem">Ваша проблема <span class="req">*</span></label>
             <select id="problem"></select>
             <div class="presetRow" id="presetRow" aria-label="Частые заявки"></div>
-            <label>Срочность <span class="req">*</span></label>
+            <label>Срочность <span class="req">*</span><span class="explainer" tabindex="0" title="P1 — совсем не работает, P2 — мешает работать, но можно продолжать, P3 — просто вопрос, не срочно">ⓘ</span></label>
             <div class="urgencyRow" id="urgencyRow" role="radiogroup" aria-label="Срочность">
               <label><input type="radio" name="urgency" value="P1"> 🔴 Не работает совсем</label>
               <label><input type="radio" name="urgency" value="P2"> 🟠 Мешает работать</label>
@@ -457,6 +494,7 @@
 
           <div class="card">
             <h2>3. Файлы и скриншоты</h2>
+            <div class="simpleQuestion"><span class="qIcon">📎</span> Есть скриншот или файл?</div>
             <div class="stepHelp"><b>Как прикрепить скрин:</b> сделайте скриншот, нажмите сюда в серую область и нажмите <b>Ctrl+V</b>. Или нажмите кнопку «Выбрать файлы». Если не знаете, как сделать скриншот, откройте инструкцию: <a href="https://wiki.gkmillenium.ru/bin/view/polzovatelskaya-dokumentaciya-filialy/instrukcii-salamashko/raznoe/Skrinshoter/" target="_blank" rel="noopener noreferrer">как делать скриншоты</a>.<br><br><b>Если нужно прислать видео:</b> загрузите его в облачное хранилище (Яндекс Диск, Mail Облако, Google Диск или любое другое) и вставьте ссылку в поле описания проблемы.</div>
             <div class="shotHow" aria-hidden="true">
               <span class="kbd"><span>Ctrl</span><span>V</span></span>
@@ -477,9 +515,11 @@
 
           <div class="card">
             <h2>4. Получить результат</h2>
+            <div class="simpleQuestion"><span class="qIcon">✉️</span> Готовы отправить?</div>
             <div id="errors" class="errorBox"></div>
             <button id="copyAllMainBtn" class="copyAllPrimary" type="button">📋 Скопировать заявку целиком</button>
             <div id="copySuccess" class="successBanner">Готово ✓ Текст скопирован. Откройте почту и нажмите <b>Ctrl+V</b>. Файлы и архив прикрепите отдельно.</div>
+            <p class="hint">🔒 Приложение само ничего не отправляет. Вы скопируете готовое письмо и отправите его через свою почту.</p>
             <div class="buttonRow">
               <div><div class="stepBadge stepBadge--blue">① Шаг первый</div><button id="buildBtn" type="button">Проверить и сформировать</button></div>
               <div class="buttonHelp">Нажмите эту кнопку, когда всё заполнили. Если чего-то не хватает, приложение покажет список простыми словами.</div>
