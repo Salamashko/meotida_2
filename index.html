@@ -3013,7 +3013,12 @@ function wizStepMissingMessage(i){
 }
 function renderWizard(){
   const cards = wizardCards();
-  cards.forEach((c,i)=>{ c.style.display = (i===wizStep) ? "" : "none"; });
+  cards.forEach((c,i)=>{
+    const show = i===wizStep;
+    c.style.display = show ? "" : "none";
+    c.classList.remove("wizFadeIn");
+    if(show){ void c.offsetWidth; c.classList.add("wizFadeIn"); }
+  });
   const crumbs = $("wizardCrumbs");
   if(crumbs){
     crumbs.innerHTML = WIZ_TITLES.map((t,i)=>{
