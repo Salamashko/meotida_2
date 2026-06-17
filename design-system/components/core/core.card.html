@@ -1,0 +1,58 @@
+<!-- @dsCard group="Components" viewport="700x300" name="Buttons, Cards, Pills & Badges" subtitle="Core surfaces and actions" -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body { margin: 0; padding: 22px; }
+  .wrap { display: grid; gap: 18px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .lbl { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<script type="text/babel">
+  const { Button, Card, Pill, Badge } = window.DesignSystem_56ba0f;
+  function Demo() {
+    return (
+      <div className="wrap">
+        <div className="row">
+          <Button variant="primary" icon="✉️">Сформировать письмо</Button>
+          <Button variant="secondary">Скопировать тему</Button>
+          <Button variant="ghost">Очистить</Button>
+          <Button variant="danger">Удалить</Button>
+          <Button variant="primary" disabled>Недоступно</Button>
+        </div>
+        <div className="row">
+          <Button variant="mail" size="lg">📧 Открыть в почте</Button>
+          <Button variant="copyAll">📋 Скопировать заявку целиком</Button>
+          <Button variant="zip">💾 Скачать .zip</Button>
+        </div>
+        <div className="row">
+          <Pill icon="🔒" tone="ok">Работает локально</Pill>
+          <Pill>v32 · Простой режим</Pill>
+          <Pill tone="warn">Офлайн</Pill>
+          <Badge tone="public">Публичная</Badge>
+          <Badge tone="internal">Внутренняя</Badge>
+          <Badge tone="candidate">Кандидат</Badge>
+        </div>
+        <Card style={{ maxWidth: 360 }}>
+          <div className="lbl">Карточка</div>
+          <div style={{ fontWeight: 800, fontSize: 18, letterSpacing: "-.02em" }}>Декларация соответствия</div>
+          <p style={{ color: "var(--muted)", margin: "8px 0 0", lineHeight: 1.45, fontSize: 13 }}>
+            Белая поверхность, тонкая рамка, радиус 22px, мягкая тень.
+          </p>
+        </Card>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(<Demo />);
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+/* ГК Миллениум — Typography tokens
+   The app ships no webfonts — it uses the platform sans (Arial/Helvetica)
+   for maximum reliability on locked-down corporate machines, and a system
+   monospace stack for code/result blocks. Keep it that way. */
+
+:root {
+  /* ---- Families ---- */
+  --font-sans: Arial, Helvetica, "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, Consolas, Menlo, monospace;
+
+  /* ---- Base size (drives the "large font" accessibility mode) ---- */
+  --fs-base: 16px;
+
+  /* ---- Scale ---- */
+  --fs-h1: clamp(26px, 3.2vw, 46px); /* @kind font */ /* fluid page title */
+  --fs-h2: 23px;
+  --fs-h3: 18px;
+  --fs-body: var(--fs-base);
+  --fs-label: 14px;
+  --fs-hint: calc(var(--fs-base) * 0.9);  /* ~13px */
+  --fs-mini: 12px;
+
+  /* ---- Weights ---- */
+  --fw-regular: 400;  /* @kind font */
+  --fw-medium: 600;   /* @kind font */ /* combo items, presets */
+  --fw-strong: 700;   /* @kind font */ /* toolbar buttons, hints emphasis */
+  --fw-bold: 800;     /* @kind font */ /* buttons, labels, headings emphasis */
+  --fw-black: 900;    /* @kind font */ /* required asterisk, checkmarks */
+
+  /* ---- Line heights ---- */
+  --lh-tight: 1.05;   /* @kind font */ /* h1 */
+  --lh-snug: 1.25;    /* @kind font */ /* inst titles */
+  --lh-normal: 1.45;  /* @kind font */ /* body copy, hints */
+  --lh-relaxed: 1.6;  /* @kind font */
+
+  /* ---- Letter spacing (headings tighten) ---- */
+  --ls-h1: -.03em;     /* @kind font */
+  --ls-heading: -.02em; /* @kind font */
+}

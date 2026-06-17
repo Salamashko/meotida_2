@@ -11,23 +11,42 @@
       --accent:#0086bb; --accent-dark:#006e99; --red:#b91c1c; --red-soft:#fff1f2;
       --green:#15803d; --green-soft:#ecfdf3; --yellow:#fff7ed; --orange:#b45309;
       --shadow:0 18px 50px rgba(15,23,42,.10); --radius:22px;
+      /* ===== Миллениум Design System — токены ===== */
+      /* Шрифты (только платформенные, без веб-шрифтов — для офлайна) */
+      --font-sans:Arial,Helvetica,"Segoe UI",system-ui,sans-serif;
+      --font-mono:ui-monospace,Consolas,Menlo,monospace;
+      /* Фирменные цвета логотипа и доп. палитры */
+      --brand-red:#d8232a; --brand-yellow:#f2c511;
+      --champ-bg:#f7f1e8; --champ-soft:#efe4d6; --champ-gold:#b08d57; --champ-graphite:#2b2b2f; --champ-line:#d8c3a5;
+      --simple-accent:#7fae9e; --simple-accent-dark:#5f9483;
+      --violet:#7c3aed; --violet-dark:#6d28d9;
+      /* Скругления */
+      --radius-card:22px; --radius-header:30px; --radius-control:14px; --radius-soft:16px; --radius-pill:999px; --radius-sm:8px; --radius-xs:6px;
+      /* Высота элементов управления */
+      --control-min-h:42px; --control-min-h-simple:48px; --control-min-h-hero:66px;
+      /* Тени */
+      --shadow-card:0 8px 24px rgba(15,23,42,.08); --shadow-accent:0 12px 26px rgba(0,134,187,.2); --shadow-soft:0 6px 24px rgba(120,110,150,.10);
+      /* Фокус */
+      --focus-ring:rgba(0,134,187,.12); --focus-outline:#f59e0b;
+      /* Движение */
+      --ease:cubic-bezier(.4,0,.2,1); --dur-fast:.15s; --dur:.25s;
     }
     *{box-sizing:border-box}
-    html{max-width:100%;overflow-x:hidden} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at 0 0,rgba(0,134,187,.14),transparent 33%),linear-gradient(180deg,var(--bg),#f8fbfc);color:var(--text);max-width:100%;overflow-x:hidden}
+    html{max-width:100%;overflow-x:hidden} body{margin:0;font-family:var(--font-sans);background:radial-gradient(circle at 0 0,rgba(0,134,187,.14),transparent 33%),linear-gradient(180deg,var(--bg),#f8fbfc);color:var(--text);max-width:100%;overflow-x:hidden}
     .app{width:min(1600px,calc(100vw - 32px));max-width:100%;margin:22px auto 42px}
-    header{background:linear-gradient(135deg,#fff,#eef8fc);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow);padding:20px;display:grid;gap:14px}
+    header{background:linear-gradient(135deg,#fff,#eef8fc);border:1px solid var(--line);border-radius:var(--radius-header);box-shadow:var(--shadow);padding:20px;display:grid;gap:14px}
     .top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:15px;min-width:280px}
-    .logo{width:116px;height:auto;background:#fff;border-radius:16px;padding:7px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(15,23,42,.08)}
+    .logo{width:116px;height:auto;background:#fff;border-radius:var(--radius-soft);padding:7px;border:1px solid var(--line);box-shadow:var(--shadow-card)}
     h1{margin:0;font-size:clamp(26px,3.2vw,46px);letter-spacing:-.03em;line-height:1.05}
     .subtitle{margin:7px 0 0;color:var(--muted);line-height:1.45;max-width:900px}
     .meta{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;color:var(--muted);font-size:13px}
     .pill{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:999px;white-space:nowrap}
     .tabs{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
-    button,.btnLike{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;background:var(--accent);color:white;font:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;text-decoration:none;transition:.15s}
-    button:hover,.btnLike:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(0,134,187,.2)}
+    button,.btnLike{border:0;border-radius:var(--radius-control);padding:11px 14px;font-weight:800;cursor:pointer;background:var(--accent);color:white;font:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:var(--control-min-h);text-decoration:none;transition:var(--dur-fast)}
+    button:hover,.btnLike:hover{transform:translateY(-1px);box-shadow:var(--shadow-accent)}
     button.secondary{background:#eef7fb;color:#075985;border:1px solid #cbe8f4}
-    button.mailPrimary{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:1px solid #fb923c;box-shadow:0 14px 28px rgba(249,115,22,.26);font-size:19px;font-weight:800;min-height:66px;padding:16px 22px;width:100%;line-height:1.3}
+    button.mailPrimary{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:1px solid #fb923c;box-shadow:0 14px 28px rgba(249,115,22,.26);font-size:19px;font-weight:800;min-height:var(--control-min-h-hero);padding:16px 22px;width:100%;line-height:1.3}
     button.mailPrimary:hover{box-shadow:0 18px 36px rgba(220,38,38,.30)}
     .mailTopAction{margin:0 0 16px}
     .mailExplain{margin:12px 2px 0;font-size:15px;line-height:1.6;color:var(--muted)}
@@ -61,7 +80,7 @@
     .req{color:var(--red);font-weight:900}
     input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:14px;padding:12px 13px;font:inherit;background:#fff;color:var(--text);outline:none}
     textarea{min-height:105px;resize:vertical;line-height:1.45}
-    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(0,134,187,.12)}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--focus-ring)}
     .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .hint{color:var(--muted);font-size:13px;line-height:1.45;margin:8px 0 0}
     .buttonRow{display:grid;grid-template-columns:minmax(160px,auto) minmax(0,1fr);gap:12px;align-items:center;margin-top:14px;max-width:100%}
@@ -202,7 +221,7 @@
     .itw b{color:var(--c-text)}
     .itw .gold{color:var(--c-gold);font-weight:800}
     .itw pre.code{background:var(--c-dark);color:#f3ead8;border-radius:12px;padding:12px 14px;margin:10px 0;overflow:auto;
-      font-family:ui-monospace,Consolas,Menlo,monospace;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;border:1px solid #3a3a40}
+      font-family:var(--font-mono);font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;border:1px solid #3a3a40}
     .itw .warn{background:#fff6ec;border:1px solid #e7c9a3;border-left:5px solid #b45309;border-radius:14px;padding:14px 16px;margin:14px 0}
     .itw .warn b{color:#8a4a08}
     .itw .ok{background:#f3efe6;border:1px solid var(--c-line);border-left:5px solid #1f7349;border-radius:14px;padding:14px 16px;margin:14px 0}
@@ -229,6 +248,7 @@
       --accent:#2ba8db; --accent-dark:#1e90c4; --red:#f87171; --red-soft:#3b1d24;
       --green:#4ade80; --green-soft:#16341f; --yellow:#3a2c12; --orange:#fbbf24;
       --shadow:0 18px 50px rgba(0,0,0,.45);
+      --focus-ring:rgba(43,168,219,.22);
       background:linear-gradient(180deg,#0b1220,#0f172a);
     }
     body.theme-dark header{background:linear-gradient(135deg,#16233b,#0f1c30)}
@@ -276,12 +296,12 @@
     body.theme-dark .localBadge{border-color:#1f7a44}
 
     /* Переключатель режимов */
-    .modeLabel{font-weight:800;color:#6d28d9;margin-right:2px;font-size:13px;align-self:center}
+    .modeLabel{font-weight:800;color:var(--violet-dark);margin-right:2px;font-size:13px;align-self:center}
     body.theme-dark .modeLabel{color:#c4b5fd}
     .modeSwitch{display:inline-flex;border:2px solid #a78bfa;border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(124,58,237,.18)}
-    .modeSwitch button{background:#f5f3ff;color:#6d28d9;border:0;border-radius:0;padding:9px 16px;font-size:14px;font-weight:700;min-height:40px}
+    .modeSwitch button{background:#f5f3ff;color:var(--violet-dark);border:0;border-radius:0;padding:9px 16px;font-size:14px;font-weight:700;min-height:40px}
     body.theme-dark .modeSwitch button{background:#2a2147;color:#c4b5fd}
-    .modeSwitch button.on{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
+    .modeSwitch button.on{background:linear-gradient(135deg,var(--violet),var(--violet-dark));color:#fff}
 
     /* Индикатор прогресса */
     .progressWrap{margin:14px 0 0}
@@ -307,8 +327,8 @@
     body.mode-simple{
       --bg:#f6f4fb; --soft:#eef0f6; --card:#ffffff;
       --text:#3a3a42; --muted:#8b8b95; --line:#e7e3f1;
-      --accent:#7fae9e; --accent-dark:#5f9483;
-      --shadow:0 6px 24px rgba(120,110,150,.10); --radius:18px;
+      --accent:var(--simple-accent); --accent-dark:var(--simple-accent-dark);
+      --shadow:var(--shadow-soft); --radius:18px;
       background:linear-gradient(180deg,#f6f4fb,#f8f7fb);
       font-size:max(17px, var(--fs-base));
     }

@@ -1,0 +1,39 @@
+/* ГК Миллениум — Base / reset
+   Minimal element defaults so consumer pages and specimen cards pick up
+   the brand typography and signature page wash automatically. */
+
+* { box-sizing: border-box; }
+
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  color: var(--text);
+  /* Signature page background: a soft teal glow from the top-left
+     over a pale vertical wash. Used app-wide. */
+  background:
+    radial-gradient(circle at 0 0, rgba(0, 134, 187, .14), transparent 33%),
+    linear-gradient(180deg, var(--bg), #f8fbfc);
+}
+
+/* Keyboard focus — amber ring, app-wide */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus-outline);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: rgba(0, 134, 187, .18);
+}
