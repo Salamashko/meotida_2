@@ -245,10 +245,18 @@
     body.theme-contrast input,body.theme-contrast select,body.theme-contrast textarea,
     body.theme-contrast .card,body.theme-contrast header,body.theme-contrast button{border:2px solid #000!important}
     body.theme-contrast button{background:#000;color:#fff}
+    /* Высокий контраст важнее пастели Простого режима при одновременном включении */
+    body.theme-contrast.mode-simple{
+      --bg:#ffffff; --soft:#ffffff; --card:#ffffff;
+      --text:#000000; --muted:#1a1a1a; --line:#000000;
+      --accent:#0000cc; --accent-dark:#000099; --shadow:none;
+      background:#fff;
+    }
 
     /* Видимый фокус с клавиатуры */
     a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,
-    textarea:focus-visible,[tabindex]:focus-visible,.comboItem:focus-visible{
+    textarea:focus-visible,[tabindex]:focus-visible,.comboItem:focus-visible,
+    summary:focus-visible{
       outline:3px solid #f59e0b; outline-offset:2px; border-radius:8px;
     }
 
