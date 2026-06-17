@@ -1,0 +1,9 @@
+/* ГК Миллениум Design System — global entry point.
+   Consumers link THIS file. It is import-only by design.
+   Everything reachable from here ships to consumers. */
+
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/themes.css";
+@import "tokens/base.css";

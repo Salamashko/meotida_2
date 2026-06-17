@@ -1,0 +1,59 @@
+/* ГК Миллениум — Color tokens
+   Source of truth: meotida_2/index.html :root palette.
+   Base palette (light/default) + semantic aliases. */
+
+:root {
+  /* ---- Base surfaces ---- */
+  --bg: #f3f8fa;          /* page background base */
+  --soft: #e7f0f3;        /* tinted fill / hover wash */
+  --card: #ffffff;        /* card & panel surface */
+  --glass: #ffffffcc;     /* translucent overlay surface */
+
+  /* ---- Text ---- */
+  --text: #17242a;        /* primary ink */
+  --muted: #60717a;       /* secondary / hint text */
+
+  /* ---- Lines ---- */
+  --line: #c7d9e0;        /* borders, dividers */
+
+  /* ---- Brand accent (signature teal-blue) ---- */
+  --accent: #0086bb;
+  --accent-dark: #006e99;
+
+  /* ---- Semantic status ---- */
+  --red: #b91c1c;
+  --red-soft: #fff1f2;
+  --green: #15803d;
+  --green-soft: #ecfdf3;
+  --yellow: #fff7ed;      /* warning surface */
+  --orange: #b45309;      /* warning ink */
+
+  /* ---- Brand logo colors (Миллениум mountain mark) ---- */
+  --brand-red: #d8232a;
+  --brand-yellow: #f2c511;
+
+  /* ---- "Champagne & graphite" — IT/admin section accent ---- */
+  --champ-bg: #f7f1e8;
+  --champ-soft: #efe4d6;
+  --champ-gold: #b08d57;
+  --champ-graphite: #2b2b2f;
+  --champ-line: #d8c3a5;
+
+  /* ---- Simple-mode accent (pastel sage) ---- */
+  --simple-accent: #7fae9e;
+  --simple-accent-dark: #5f9483;
+
+  /* ---- Mode-switch / wizard accent (violet) ---- */
+  --violet: #7c3aed;
+  --violet-dark: #6d28d9;
+
+  /* ---- Semantic aliases ---- */
+  --surface-page: var(--bg);
+  --surface-card: var(--card);
+  --surface-soft: var(--soft);
+  --text-body: var(--text);
+  --text-subtle: var(--muted);
+  --border-default: var(--line);
+  --focus-ring: rgba(0, 134, 187, .12);     /* 4px outer glow on focus */
+  --focus-outline: #f59e0b;                  /* keyboard focus-visible ring */
+}

@@ -1,0 +1,68 @@
+/* ГК Миллениум — Theme scopes
+   The app supports four runtime modes that re-map the base palette:
+   Dark, High-contrast, and Simple (pastel). Apply as a class on <body>
+   (or any container): theme-dark, theme-contrast, mode-simple.
+   These override the base tokens from colors.css. */
+
+/* ---- Dark theme ---- */
+.theme-dark {
+  --bg: #0f172a;
+  --soft: #1e293b;
+  --card: #1e293b;
+  --glass: #1e293bcc;
+  --text: #e5edf2;
+  --muted: #94a8b8;
+  --line: #33455a;
+  --accent: #2ba8db;
+  --accent-dark: #1e90c4;
+  --red: #f87171;
+  --red-soft: #3b1d24;
+  --green: #4ade80;
+  --green-soft: #16341f;
+  --yellow: #3a2c12;
+  --orange: #fbbf24;
+  --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  --focus-ring: rgba(43, 168, 219, .22);
+}
+
+/* ---- High-contrast theme (WCAG AAA, no shadows, heavy borders) ---- */
+.theme-contrast {
+  --bg: #ffffff;
+  --soft: #ffffff;
+  --card: #ffffff;
+  --glass: #ffffff;
+  --text: #000000;
+  --muted: #1a1a1a;
+  --line: #000000;
+  --accent: #0000cc;
+  --accent-dark: #000099;
+  --shadow: none;
+}
+
+/* ---- Simple mode (pastel sage, larger type, gentler shadow) ---- */
+.mode-simple {
+  --bg: #f6f4fb;
+  --soft: #eef0f6;
+  --card: #ffffff;
+  --text: #3a3a42;
+  --muted: #8b8b95;
+  --line: #e7e3f1;
+  --accent: #7fae9e;
+  --accent-dark: #5f9483;
+  --shadow: 0 6px 24px rgba(120, 110, 150, .10);
+  --radius: 18px;
+  --fs-base: 17px;
+}
+
+/* Contrast wins over Simple when both are on */
+.theme-contrast.mode-simple {
+  --bg: #ffffff;
+  --soft: #ffffff;
+  --card: #ffffff;
+  --text: #000000;
+  --muted: #1a1a1a;
+  --line: #000000;
+  --accent: #0000cc;
+  --accent-dark: #000099;
+  --shadow: none;
+}

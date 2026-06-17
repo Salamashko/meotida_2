@@ -1,0 +1,14 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Status colors" subtitle="Red / green / amber, ink + soft fill pairs" -->
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .pair{border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+  .ink{padding:12px 14px;font-weight:800;font-size:14px}
+  .soft{padding:12px 14px;font-size:12px;font-family:var(--font-mono)}
+</style></head>
+<body>
+  <div class="pair"><div class="ink" style="background:var(--red);color:#fff">red · ошибка</div><div class="soft" style="background:var(--red-soft);color:var(--red)">red-soft</div></div>
+  <div class="pair"><div class="ink" style="background:var(--green);color:#fff">green · успех</div><div class="soft" style="background:var(--green-soft);color:var(--green)">green-soft</div></div>
+  <div class="pair"><div class="ink" style="background:var(--orange);color:#fff">orange · внимание</div><div class="soft" style="background:var(--yellow);color:var(--orange)">yellow</div></div>
+</body></html>

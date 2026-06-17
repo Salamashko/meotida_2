@@ -1,0 +1,46 @@
+/* ГК Миллениум — Spacing, radii, shadows
+   Derived from the spacing rhythm in the app (paddings cluster around
+   8 / 12 / 14 / 20 / 26px; radii are large and friendly). */
+
+:root {
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 14px;
+  --space-5: 18px;
+  --space-6: 20px;
+  --space-7: 26px;
+  --space-8: 42px;
+
+  /* ---- Gaps ---- */
+  --gap-tight: 8px;
+  --gap: 12px;
+  --gap-loose: 20px;
+
+  /* ---- Corner radii (large, rounded, friendly) ---- */
+  --radius: 22px;        /* cards, big panels */
+  --radius-card: 22px;
+  --radius-header: 30px; /* the header shell */
+  --radius-control: 14px;/* inputs, buttons */
+  --radius-soft: 16px;   /* banners, help blocks */
+  --radius-pill: 999px;  /* pills, badges, chips */
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+
+  /* ---- Control sizing ---- */
+  --control-min-h: 42px;        /* default button / control height */
+  --control-min-h-simple: 48px; /* Simple-mode minimum (large touch) */
+  --control-min-h-hero: 66px;   /* primary "send" CTA */
+
+  /* ---- Shadows ---- */
+  --shadow: 0 18px 50px rgba(15, 23, 42, .10);      /* card / panel float */
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, .08);  /* small lift */
+  --shadow-accent: 0 12px 26px rgba(0, 134, 187, .2); /* button hover */
+  --shadow-soft: 0 6px 24px rgba(120, 110, 150, .10); /* Simple-mode */
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(.4, 0, .2, 1); /* @kind other */
+  --dur-fast: .15s; /* @kind other */
+  --dur: .25s; /* @kind other */
+}
