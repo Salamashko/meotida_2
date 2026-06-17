@@ -302,6 +302,8 @@
     body.mode-simple .stepHelp,body.mode-simple .stepBadge,
     body.mode-simple .subtitle{display:none!important}
     body.mode-simple .card{padding:26px;margin-bottom:22px}
+    body.mode-simple .tabs [data-tab="configTab"],
+    body.mode-simple .tabs [data-tab="itWikiTab"]{display:none!important}
     body.mode-simple input,body.mode-simple select,body.mode-simple textarea{min-height:48px;padding:13px 14px}
     body.mode-simple button{min-height:48px}
     body.mode-simple .row{gap:18px}
@@ -2937,6 +2939,16 @@ function setMode(mode){
   document.body.classList.toggle("collapse-help", mode==="simple");
   document.querySelectorAll("#modeSwitch button").forEach(b=>b.classList.toggle("on", b.dataset.mode===mode));
   try{ localStorage.setItem(MODE_KEY, mode); }catch(e){}
+  if(mode==="simple"){
+    const activeBtn = document.querySelector(".tabBtn.active");
+    if(activeBtn && (activeBtn.dataset.tab==="configTab" || activeBtn.dataset.tab==="itWikiTab")){
+      document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+      const formBtn = document.querySelector('.tabBtn[data-tab="formTab"]');
+      if(formBtn) formBtn.classList.add("active");
+      $("formTab").classList.add("active");
+    }
+  }
   syncWizard();
 }
 
