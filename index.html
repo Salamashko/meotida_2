@@ -48,8 +48,11 @@
     button.secondary{background:#eef7fb;color:#075985;border:1px solid #cbe8f4}
     button.mailPrimary{background:linear-gradient(135deg,#f97316,#dc2626);color:#fff;border:1px solid #fb923c;box-shadow:0 14px 28px rgba(249,115,22,.26);font-size:19px;font-weight:800;min-height:var(--control-min-h-hero);padding:16px 22px;width:100%;line-height:1.3}
     button.mailPrimary:hover{box-shadow:0 18px 36px rgba(220,38,38,.30)}
-    .mailTopAction{margin:0 0 16px}
-    .mailExplain{margin:12px 2px 0;font-size:15px;line-height:1.6;color:var(--muted)}
+    .mailTopCard{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-color:#fdba74}
+    body.theme-dark .mailTopCard{background:linear-gradient(135deg,#2a1e12,#3a2410);border-color:#b45309}
+    body.theme-contrast .mailTopCard{background:#fff}
+    .mailTopAction{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:22px;align-items:center}
+    .mailExplain{margin:0;font-size:15px;line-height:1.6;color:var(--muted)}
     .mailExplain b{color:var(--text)}
     body.mode-simple button.mailPrimary{font-size:21px;min-height:74px}
     body.mode-simple .mailExplain{font-size:16.5px;color:var(--text)}
@@ -74,8 +77,8 @@
     main{margin-top:18px}
     .tab{display:none}.tab.active{display:block}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;max-width:100%}.grid>*{min-width:0}
-    /* Заполнение заявки — одна колонка по центру, поля во всю ширину и одинаковые */
-    #formTab .grid{grid-template-columns:1fr;gap:0;max-width:960px;margin-left:auto;margin-right:auto}
+    /* Заполнение заявки — одна колонка во всю ширину, поля одинаковые и широкие */
+    #formTab .grid{grid-template-columns:1fr;gap:0}
     #formTab .row{grid-template-columns:1fr;gap:16px}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:18px;min-width:0;max-width:100%;overflow-wrap:anywhere}
     h2,h3{letter-spacing:-.02em} h2{margin:0 0 12px;font-size:23px} h3{margin:0 0 10px;font-size:18px}
@@ -153,7 +156,7 @@
     .wikiChip:hover{border-color:var(--accent);color:var(--accent-dark)}
     .wikiStatus{color:var(--muted);font-size:13px;margin-bottom:10px}
     @media(max-width:900px){.wikiSearchGrid{grid-template-columns:1fr}}
-    @media(max-width:900px){.grid,.twoCols,.row{grid-template-columns:1fr}.buttonRow{grid-template-columns:1fr}.meta{justify-content:flex-start}.brand{align-items:flex-start}.logo{width:92px}.app{width:min(100% - 18px,1560px);margin-top:10px}header{border-radius:22px;padding:15px}.card{padding:15px}}
+    @media(max-width:900px){.grid,.twoCols,.row,.mailTopAction{grid-template-columns:1fr}.buttonRow{grid-template-columns:1fr}.meta{justify-content:flex-start}.brand{align-items:flex-start}.logo{width:92px}.app{width:min(100% - 18px,1560px);margin-top:10px}header{border-radius:22px;padding:15px}.card{padding:15px}}
     @media print{header,.tabs,button,.buttonHelp,.stepHelp{display:none!important}.app{width:100%;margin:0}.grid{display:block}.card{box-shadow:none;border:0}}
 
     .strongHelp{font-weight:700;color:#075985}
@@ -335,6 +338,16 @@
       background:linear-gradient(180deg,#f6f4fb,#f8f7fb);
       font-size:max(17px, var(--fs-base));
     }
+    /* Тёмная тема важнее пастели Простого режима при одновременном включении */
+    body.theme-dark.mode-simple{
+      --bg:#0f172a; --soft:#1e293b; --card:#1e293b; --glass:#1e293bcc;
+      --text:#e5edf2; --muted:#94a8b8; --line:#33455a;
+      --accent:#2ba8db; --accent-dark:#1e90c4; --red:#f87171; --red-soft:#3b1d24;
+      --green:#4ade80; --green-soft:#16341f; --yellow:#3a2c12; --orange:#fbbf24;
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --focus-ring:rgba(43,168,219,.22);
+      background:linear-gradient(180deg,#0b1220,#0f172a);
+    }
     body.mode-simple .buttonHelp,body.mode-simple .helpToggle,
     body.mode-simple .stepHelp,body.mode-simple .stepBadge,
     body.mode-simple .subtitle{display:none!important}
@@ -488,6 +501,12 @@
         <button type="button" class="secondary" id="draftRestoreBtn">Восстановить</button>
         <button type="button" class="ghost" id="draftDiscardBtn">Начать заново</button>
       </div>
+      <div class="card mailTopCard">
+        <div class="mailTopAction">
+          <button id="openMailBtn" class="mailPrimary" type="button">📧 Скачать готовое письмо (Outlook / Thunderbird)</button>
+          <p class="mailExplain">Нажмите — на компьютер скачается небольшой файл письма. Найдите его в папке <b>«Загрузки»</b> и откройте <b>двойным щелчком мыши</b>. Ваша почтовая программа откроется сама — тема и текст уже будут вписаны. Останется только прикрепить файлы (если они есть) и нажать <b>«Отправить»</b>.</p>
+        </div>
+      </div>
       <div class="grid">
         <div>
           <div id="wizardNav" class="card" style="display:none">
@@ -599,10 +618,6 @@
 
         <aside>
           <div class="card">
-            <div class="mailTopAction">
-              <button id="openMailBtn" class="mailPrimary" type="button">📧 Скачать готовое письмо<br>(Outlook / Thunderbird)</button>
-              <p class="mailExplain">Нажмите — на компьютер скачается небольшой файл письма. Найдите его в папке <b>«Загрузки»</b> и откройте <b>двойным щелчком мыши</b>. Ваша почтовая программа откроется сама — тема и текст уже будут вписаны. Останется только прикрепить файлы (если они есть) и нажать <b>«Отправить»</b>.</p>
-            </div>
             <h2>Тема письма</h2>
             <div id="subjectPreview" class="subjectBox">Пока не сформировано.</div>
             <div class="buttonRow">
