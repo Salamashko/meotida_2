@@ -2565,6 +2565,8 @@ function clearAll(){
   renderDynamicFields();
   renderConfig();
   renderInstructions([]);
+  wizStep = 0;
+  syncWizard();
 }
 
 
@@ -2955,6 +2957,7 @@ function setMode(mode){
   document.body.classList.toggle("collapse-help", mode==="simple");
   document.querySelectorAll("#modeSwitch button").forEach(b=>b.classList.toggle("on", b.dataset.mode===mode));
   try{ localStorage.setItem(MODE_KEY, mode); }catch(e){}
+  if($("clearAllBtn")) $("clearAllBtn").textContent = mode==="simple" ? "🔄 Начать сначала" : "Очистить всё";
   if(mode==="simple"){
     const activeBtn = document.querySelector(".tabBtn.active");
     if(activeBtn && (activeBtn.dataset.tab==="configTab" || activeBtn.dataset.tab==="itWikiTab")){
