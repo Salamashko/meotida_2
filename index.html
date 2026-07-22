@@ -1098,22 +1098,51 @@ function safeFileName(s){
   return r.slice(0,90);
 }
 function todayCompact(){ const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0"); }
-function buildBodyHtml(body){
-  const LABEL_PFX=['ГОРОД: ','ЮРЛИЦО: ','ПРОГРАММА / БАЗА: ','КОНТАКТ ДЛЯ СВЯЗИ: ','ПРОБЛЕМА: '];
-  const LABEL_EXACT=new Set(['ДАННЫЕ ПО ПРОБЛЕМЕ:','ЧТО ПРИЛОЖИЛ ПОЛЬЗОВАТЕЛЬ:','ПРИКРЕПЛЕННЫЕ ФАЙЛЫ:','КОММЕНТАРИЙ:']);
-  const LABEL_ST='color:#8b9ab0;font-size:0.88em';
-  const FOOTER_ST='color:#6b7280;font-size:0.82em';
-  const lines=body.split('\n');
-  const fi=lines.findIndex(l=>l.startsWith('ПОДХОДЯЩИЕ ИНСТРУКЦИИ:'));
-  return lines.map((line,i)=>{
-    const e=escapeHtml(line);
-    if(fi>=0&&i>=fi) return `<span style="${FOOTER_ST}">${e}</span>`;
-    if(LABEL_EXACT.has(line)) return `<span style="${LABEL_ST}">${e}</span>`;
-    const p=LABEL_PFX.find(x=>line.startsWith(x));
-    if(p) return `<span style="${LABEL_ST}">${escapeHtml(p)}</span>${escapeHtml(line.slice(p.length))}`;
-    return e;
-  }).join('\n');
+// Единый рендерер тела письма: подписи полей превращаются в жирные цветные бейджи-«пилюли»
+// (ГОРОД:, ДАТА ПРОБЛЕМЫ:, ЧТО НЕ РАБОТАЕТ: и т.д.), блоки разносятся воздухом.
+// Используется и для предпросмотра (asDocument:false), и для .eml (asDocument:true).
+// Регекс-детектор ловит ЛЮБУЮ подпись в верхнем регистре (включая динамические поля проблемы),
+// поэтому список подписей больше не нужно держать синхронно с шаблоном письма.
+function renderEmailBody(body, opts){
+  const asDoc = !!(opts && opts.asDocument);
+  // Цвет фона бейджа по точному совпадению подписи (без двоеточия).
+  const CAT = {
+    'ГОРОД':'#006e99', 'ЮРЛИЦО':'#006e99', 'ПРОГРАММА / БАЗА':'#006e99', 'КОНТАКТ ДЛЯ СВЯЗИ':'#006e99',
+    'ПРОБЛЕМА':'#d8232a',
+    'ДАННЫЕ ПО ПРОБЛЕМЕ':'#6d28d9',
+    'ЧТО ПРИЛОЖИЛ ПОЛЬЗОВАТЕЛЬ':'#15803d', 'ПРИКРЕПЛЕННЫЕ ФАЙЛЫ':'#15803d',
+    'ВАЖНО':'#b45309',
+    'ПОДХОДЯЩИЕ ИНСТРУКЦИИ':'#0f766e', 'КОММЕНТАРИЙ':'#0f766e',
+    'КАТЕГОРИЯ':'#64748b', 'СРОЧНОСТЬ':'#64748b'
+  };
+  // Заголовки секций: поля, идущие ниже, наследуют их цвет (динамические поля — фиолетовые).
+  const SECTION_HEADERS = new Set(['ДАННЫЕ ПО ПРОБЛЕМЕ','ЧТО ПРИЛОЖИЛ ПОЛЬЗОВАТЕЛЬ','ПРИКРЕПЛЕННЫЕ ФАЙЛЫ','ПОДХОДЯЩИЕ ИНСТРУКЦИИ','КОММЕНТАРИЙ']);
+  const badge = (label, bg) => `<strong style="background:${bg};color:#ffffff;padding:2px 9px;border-radius:5px;font-size:12px;letter-spacing:.3px;font-weight:700">${escapeHtml(label)}:</strong>`;
+  let currentCat = null;
+  const parts = body.split('\n').map(line=>{
+    if(!line) return '';
+    // Служебная плашка «—— ... ——» — серая полоса по центру.
+    if(line.startsWith('——')){
+      return `<div style="background:#f1f5f9;color:#64748b;padding:6px 10px;border-radius:5px;font-weight:700;text-align:center;margin:8px 0;letter-spacing:.4px">${escapeHtml(line)}</div>`;
+    }
+    // Подпись: заглавные буквы/цифры/разделители, заканчивается двоеточием.
+    const m = line.match(/^([А-ЯA-ZЁ][А-ЯA-ZЁ0-9 \/·.\-]*?):\s?(.*)$/);
+    if(!m) return escapeHtml(line);
+    const label = m[1].trim();
+    const value = m[2];
+    let bg = CAT[label];
+    if(bg){ if(SECTION_HEADERS.has(label)) currentCat = bg; }
+    else { bg = currentCat || '#475569'; } // динамические поля наследуют категорию секции
+    // ВАЖНО — выделяем фоновой плашкой с левым бордером.
+    if(label==='ВАЖНО'){
+      return `<div style="background:#fff7ed;border-left:4px solid #b45309;color:#8a4b09;padding:8px 10px;border-radius:5px;margin:8px 0">${badge(label,'#b45309')} <span style="color:#8a4b09">${escapeHtml(value)}</span></div>`;
+    }
+    if(!value) return `<div style="margin:6px 0">${badge(label,bg)}</div>`; // заголовок секции без значения
+    return `${badge(label,bg)} ${escapeHtml(value)}`;
+  });
+  return parts.join(asDoc ? '<br>\n' : '\n');
 }
+function buildBodyHtml(body){ return renderEmailBody(body, {asDocument:false}); }
 
 function applyHeaderVersion(){
   try{
@@ -2664,22 +2693,8 @@ function clearAll(){
 
 
 function buildEmailHtml(body){
-  const LABEL_PFX=['ГОРОД: ','ЮРЛИЦО: ','ПРОГРАММА / БАЗА: ','КОНТАКТ ДЛЯ СВЯЗИ: ','ПРОБЛЕМА: '];
-  const LABEL_EXACT=new Set(['ДАННЫЕ ПО ПРОБЛЕМЕ:','ЧТО ПРИЛОЖИЛ ПОЛЬЗОВАТЕЛЬ:','ПРИКРЕПЛЕННЫЕ ФАЙЛЫ:','КОММЕНТАРИЙ:']);
-  const LABEL_ST='color:#888888;font-size:12px';
-  const FOOTER_ST='color:#888888;font-size:11px';
-  const lines=body.split('\n');
-  const fi=lines.findIndex(l=>l.startsWith('ПОДХОДЯЩИЕ ИНСТРУКЦИИ:'));
-  const html=lines.map((line,i)=>{
-    const e=escapeHtml(line);
-    if(!line) return '';
-    if(fi>=0&&i>=fi) return `<span style="${FOOTER_ST}">${e}</span>`;
-    if(LABEL_EXACT.has(line)) return `<span style="${LABEL_ST}">${e}</span>`;
-    const p=LABEL_PFX.find(x=>line.startsWith(x));
-    if(p) return `<span style="${LABEL_ST}">${escapeHtml(p)}</span>${escapeHtml(line.slice(p.length))}`;
-    return e;
-  }).join('<br>\n');
-  return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;font-size:14px;color:#000000;line-height:1.5;margin:12px">${html}</body></html>`;
+  const html = renderEmailBody(body, {asDocument:true});
+  return `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;font-size:14px;color:#000000;line-height:1.6;margin:14px">${html}</body></html>`;
 }
 
 function openMailClient(){
