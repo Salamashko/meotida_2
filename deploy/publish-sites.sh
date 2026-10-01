@@ -2,9 +2,10 @@
 # Публикация приложений Меотиды на ОДНОМ адресе по путям: https://meotida.salamashkina.ru/<путь>/
 # (nginx + бесплатный сертификат Let's Encrypt). Запускать на сервере от root; можно запускать повторно.
 #
-# Корень https://meotida.salamashkina.ru/ скрипт НЕ ТРОГАЕТ: приложения добавляются отдельными location-ами
-# из файла /etc/nginx/snippets/meotida-apps.conf. Если для этого адреса в nginx уже есть свой server{},
-# скрипт его не меняет — просит добавить одну строку include и подсказывает куда.
+# Приложения добавляются отдельными location-ами из файла /etc/nginx/snippets/meotida-apps.conf.
+# Главная https://meotida.salamashkina.ru/ — список приложений (deploy/home/index.html): копируется, только если
+# /var/www/meotida/index.html нет или он наш (маркер meotida-home); чужой файл в корне не трогается.
+# Если для этого адреса в nginx уже есть свой server{}, скрипт его не меняет — просит добавить одну строку include.
 #
 # Что делает:
 #   1. ставит nginx и certbot, если их нет (если 80/443 занял не nginx — останавливается, ничего не ломая);
@@ -58,6 +59,7 @@ systemctl enable --now nginx
 log "2. Код приложений"
 mkdir -p "$SRC_DIR" "$APPS_DIR"
 published=()
+home_src=""
 for row in "${SITES[@]}"; do
   IFS='|' read -r path repo existing <<<"$row"
   dir="$SRC_DIR/$repo"
@@ -73,8 +75,21 @@ for row in "${SITES[@]}"; do
   install -m 644 "$dir/index.html" "$APPS_DIR/$path/index.html"
   published+=("$path")
   echo "/$path/: $(stat -c %s "$APPS_DIR/$path/index.html") байт <- $dir"
+  if [ "$repo" = "meotida_2" ]; then home_src="$dir/deploy/home/index.html"; fi
 done
 [ "${#published[@]}" -gt 0 ] || { warn "Ни одно приложение не опубликовано"; exit 1; }
+
+# Главная страница (список приложений): deploy/home/index.html. Перезаписываем /var/www/meotida/index.html только если
+# файла нет или он наш (есть маркер meotida-home) — свой файл владелицы в корне не трогаем.
+mkdir -p "$ROOT_DIR"
+if [ -n "$home_src" ] && [ -f "$home_src" ]; then
+  if [ ! -f "$ROOT_DIR/index.html" ] || grep -q "meotida-home" "$ROOT_DIR/index.html"; then
+    install -m 644 "$home_src" "$ROOT_DIR/index.html"
+    echo "/: главная страница обновлена ($ROOT_DIR/index.html)"
+  else
+    warn "/: в $ROOT_DIR/index.html лежит чужой файл (нет маркера meotida-home) — главную не трогаю"
+  fi
+fi
 
 # --- 3. Конфиг nginx ---------------------------------------------------------------------
 log "3. Конфиг nginx"
@@ -148,4 +163,4 @@ systemctl list-timers --no-pager 2>/dev/null | grep -i certbot || warn "Тайм
 for path in "${published[@]}"; do
   printf '%-48s %s\n' "https://$HOST/$path/" "$(curl -sS -o /dev/null -m 10 -w '%{http_code}' --resolve "$HOST:443:127.0.0.1" "https://$HOST/$path/" 2>&1 || true)"
 done
-printf '%-48s %s  (корень, не трогали)\n' "https://$HOST/" "$(curl -sS -o /dev/null -m 10 -w '%{http_code}' --resolve "$HOST:443:127.0.0.1" "https://$HOST/" 2>&1 || true)"
+printf '%-48s %s  (главная страница)\n' "https://$HOST/" "$(curl -sS -o /dev/null -m 10 -w '%{http_code}' --resolve "$HOST:443:127.0.0.1" "https://$HOST/" 2>&1 || true)"
