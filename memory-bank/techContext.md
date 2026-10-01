@@ -11,10 +11,10 @@
 | Адрес | Репозиторий | Приложение |
 |---|---|---|
 | `meotida.salamashkina.ru/zayavka/` | `meotida_2` | «Заявка в IT отдел» (актуальная) |
-| `meotida.salamashkina.ru/zayavka-old/` | `meotida` | то же, v0.29 (предшественник) |
+| `meotida.salamashkina.ru/zayavka-old/` | `meotida` | то же, v0.29 (предшественник); карточки на главной НЕТ (убрана по просьбе владелицы 2026-10-01), путь по-прежнему работает |
 | `meotida.salamashkina.ru/markirovka/` | `meotida_3` | «Маркировочный стол» |
 | `meotida.salamashkina.ru/shk/` | `meotida-shk` | «Генератор ШК GS1-128» |
-| `meotida.salamashkina.ru/pisma/` | `new-test` | каталог писем IT-поддержки |
+| `meotida.salamashkina.ru/pisma/` | `new-test` | «Шаблоны писем IT» (название на главной) |
 
 Новое приложение = строка в массиве `SITES` скрипта + карточка `<a class="app">` в `deploy/home/index.html` + повторный запуск. DNS (панель Timeweb Cloud → `salamashkina.ru` → DNS): есть одна запись `A meotida` → `186.246.27.248` (TTL 600) — этого достаточно, других записей не нужно (нужно подтвердить, что это IP сервера `8314715-nw871204`: скрипт сам сверяет с `curl api.ipify.org`). Учесть: localStorage привязан к адресу и пути — «Сохранённые сессии» на новом адресе пустые. 
 **Проверенные команды** (вывод владелицы 2026-10-01, сервер `8314715-nw871204`, root):
