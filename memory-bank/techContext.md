@@ -34,7 +34,7 @@ journalctl -u <служба> -n 50 --no-pager
 
 ```bash
 # 1. Скачать скрипт публикации
-curl -fsSL https://raw.githubusercontent.com/Salamashko/meotida_2/claude/hopeful-pascal-of0uxl/deploy/publish-sites.sh -o /root/publish-sites.sh   # ожидается: файл /root/publish-sites.sh
+curl -fsSL https://raw.githubusercontent.com/Salamashko/meotida_2/main/deploy/publish-sites.sh -o /root/publish-sites.sh   # ожидается: файл /root/publish-sites.sh
 # 2. Запустить: код, конфиг nginx, сертификат, проверка
 bash /root/publish-sites.sh   # ожидается: в конце https://meotida.salamashkina.ru/<путь>/ → 200, корень → 403
 # 3. Проверить сертификат
@@ -51,4 +51,4 @@ curl -sI https://meotida.salamashkina.ru/markirovka/ | head -3   # ожидае�
 - Файлы: код приложений — `/opt/sites-src/<репозиторий>` (для `new-test` — `/root/new-test`, подтянут до `7c8abfe`), опубликованные страницы — `/var/www/apps/<путь>/index.html`, сниппет `/etc/nginx/snippets/meotida-apps.conf`, пустой корень сайта `/var/www/meotida`, скрипт — `/root/publish-sites.sh`.
 - Размеры: `/zayavka/` 4008206 Б, `/zayavka-old/` 3775163 Б, `/markirovka/` 3945284 Б, `/shk/` 31686 Б, `/pisma/` 797800 Б.
 - Корень `https://meotida.salamashkina.ru/` отвечает 403 (пустая папка) — так и задумано, владелица наполнит позже.
-- Скрипт скачивается с ветки `claude/hopeful-pascal-of0uxl`, а не с `main` (PR не создавался); пока ветку не влили в `main`, ссылку менять нельзя.
+- Скрипт влит в `main` (PR из ветки `claude/hopeful-pascal-of0uxl`), поэтому скачивать его нужно с `main` (ссылка в блоке команд выше). Первый запуск 2026-10-01 был по ссылке на ветку — содержимое то же.
