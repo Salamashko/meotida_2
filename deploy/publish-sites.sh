@@ -22,11 +22,12 @@ SNIPPET="/etc/nginx/snippets/meotida-apps.conf"
 SERVER_CONF="/etc/nginx/conf.d/$HOST.conf"
 GH="https://github.com/Salamashko"
 
-# путь | репозиторий | существующая папка с клоном (если репозиторий уже лежит на сервере, иначе -)
+# путь | репозиторий | существующая папка с клоном (если репозиторий уже лежит на сервере, иначе -) | файл в репозитории (по умолчанию index.html)
 SITES=(
   "zayavka|meotida_2|-"            # «Заявка в IT отдел» (актуальная версия)
   "zayavka-old|meotida|-"          # «Заявка в IT отдел» v0.29 (предшественник)
   "markirovka|meotida_3|-"         # «МЕОТИДА · Маркировочный стол»
+  "ldnr|meotida_3|-|ldnr.html"     # «ЛДНР в ЭДО без кодов» (отдельная страница из meotida_3)
   "shk|meotida-shk|-"              # «Генератор линейных ШК GS1-128»
   "pisma|new-test|/root/new-test"  # каталог писем IT-поддержки
 )
@@ -61,7 +62,7 @@ mkdir -p "$SRC_DIR" "$APPS_DIR"
 published=()
 home_src=""
 for row in "${SITES[@]}"; do
-  IFS='|' read -r path repo existing <<<"$row"
+  IFS='|' read -r path repo existing srcfile <<<"$row"
   dir="$SRC_DIR/$repo"
   [ "$existing" != "-" ] && [ -d "$existing/.git" ] && dir="$existing"
   if [ -d "$dir/.git" ]; then
@@ -70,11 +71,12 @@ for row in "${SITES[@]}"; do
   else
     GIT_TERMINAL_PROMPT=0 git clone "$GH/$repo.git" "$dir" || { warn "Не удалось клонировать $repo (приватный?) — пропускаю /$path/"; continue; }
   fi
-  [ -f "$dir/index.html" ] || { warn "$repo: нет index.html — пропускаю /$path/"; continue; }
+  srcfile="${srcfile:-index.html}"
+  [ -f "$dir/$srcfile" ] || { warn "$repo: нет $srcfile — пропускаю /$path/"; continue; }
   mkdir -p "$APPS_DIR/$path"
-  install -m 644 "$dir/index.html" "$APPS_DIR/$path/index.html"
+  install -m 644 "$dir/$srcfile" "$APPS_DIR/$path/index.html"
   published+=("$path")
-  echo "/$path/: $(stat -c %s "$APPS_DIR/$path/index.html") байт <- $dir"
+  echo "/$path/: $(stat -c %s "$APPS_DIR/$path/index.html") байт <- $dir/$srcfile"
   if [ "$repo" = "meotida_2" ]; then home_src="$dir/deploy/home/index.html"; fi
 done
 [ "${#published[@]}" -gt 0 ] || { warn "Ни одно приложение не опубликовано"; exit 1; }
