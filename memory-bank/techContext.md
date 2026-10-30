@@ -14,6 +14,7 @@
 | `meotida.salamashkina.ru/zayavka-old/` | `meotida` | то же, v0.29 (предшественник); карточки на главной НЕТ (убрана по просьбе владелицы 2026-10-01), путь по-прежнему работает |
 | `meotida.salamashkina.ru/markirovka/` | `meotida_3` | «Маркировочный стол» |
 | `meotida.salamashkina.ru/ldnr/` | `meotida_3` (`ldnr.html`) | «ЛДНР в ЭДО без кодов» — отдельная лёгкая страница вкладки из «Маркировочного стола» (добавлена 26.10.2026) |
+| `meotida.salamashkina.ru/paketbalan/` | `meotida_3` (`paketbalan.html`) | «Пакеты Балан» — разбор кассовых файлов `.spr` и архивов с ними (карточка 06, добавлена 30.10.2026) |
 | `meotida.salamashkina.ru/shk/` | `meotida-shk` | «Генератор ШК GS1-128» |
 | `meotida.salamashkina.ru/pisma/` | `new-test` | «Шаблоны писем IT» (название на главной) |
 

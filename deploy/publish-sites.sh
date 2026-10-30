@@ -28,6 +28,7 @@ SITES=(
   "zayavka-old|meotida|-"          # «Заявка в IT отдел» v0.29 (предшественник)
   "markirovka|meotida_3|-"         # «МЕОТИДА · Маркировочный стол»
   "ldnr|meotida_3|-|ldnr.html"     # «ЛДНР в ЭДО без кодов» (отдельная страница из meotida_3)
+  "paketbalan|meotida_3|-|paketbalan.html"  # «Пакеты Балан» — разбор кассовых файлов .spr (страница из meotida_3)
   "shk|meotida-shk|-"              # «Генератор линейных ШК GS1-128»
   "pisma|new-test|/root/new-test"  # каталог писем IT-поддержки
 )

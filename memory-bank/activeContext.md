@@ -1,4 +1,8 @@
 ## Сейчас (2026-09-29)
+## 2026-10-30 — карточка 06 «Пакеты Балан» → `/paketbalan/`
+- В `SITES` скрипта `deploy/publish-sites.sh` строка `paketbalan|meotida_3|-|paketbalan.html`; на главной (`deploy/home/index.html`) карточка 06 «Пакеты Балан» (тег «Касса», фиолетовый акцент); счётчик приложений исправлен 4 → 6 (был устаревшим).
+- Сама страница — `paketbalan.html` в `meotida_3` (~1 МБ: внутри 7-Zip WASM для архивов). Ветка `claude/paketbalan-spr-parser-mpr96a` в обоих репозиториях; на сайт попадёт после слияния в `main` и запуска `publish-sites.sh` (команда — `techContext.md`).
+
 ## 2026-10-13 — Правило «агент выполняет команды сам» (agentctl)
 - В `CLAUDE.md` внесён раздел «Выполнение команд агентом» (метки `agentctl`) и обновлён блок Sega Mega Drive: сервер и PowerShell — через `agentctl` (`server-ops`, кнопка владелицы в Telegram), блок команд владелице — только если агент не может. Причина: в проекте zada4i-yougile ассистент ответил «нет доступа», потому что правило «всегда блоком» перебивало общее; решение и устройство — `Salamashko-sega-mega-drive/HUB_RULES.md`, §8.
 - Memory Bank создан по README и структуре репозитория. Фокус: актуальная ветка приложения; предложения — `IMPROVEMENTS_PROPOSALS_v1_20260704.md`.
